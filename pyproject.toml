@@ -10,7 +10,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.12"
-pywinauto = { version = "^0.6.8", optional = true }
+pywinauto = { version = "^0.6.8", platform = "win32" }
 pydantic = "^2.8.2"
 
 

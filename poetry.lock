@@ -29,7 +29,7 @@ pycodestyle = ">=2.12.0"
 name = "comtypes"
 version = "1.4.6"
 description = "Pure Python COM package"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "comtypes-1.4.6-py3-none-any.whl", hash = "sha256:51e7e43f45ec5e7bb2fd532c0e8b7564a7adb8c0b1c1d9c15b64963b4b103e3a"},
@@ -174,7 +174,7 @@ typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 name = "pywin32"
 version = "306"
 description = "Python for Window Extensions"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "pywin32-306-cp310-cp310-win32.whl", hash = "sha256:06d3420a5155ba65f0b72f2699b5bacf3109f36acbe8923765c22938a69dfc8d"},
@@ -197,7 +197,7 @@ files = [
 name = "pywinauto"
 version = "0.6.8"
 description = "A set of Python modules to automate the Microsoft Windows GUI"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "pywinauto-0.6.8-py2.py3-none-any.whl", hash = "sha256:931ce622d7f402b1892ab472987a1332e4c0681bf87e106f798390d16ca95e58"},
@@ -240,7 +240,7 @@ files = [
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
-optional = true
+optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
@@ -261,4 +261,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "0a7991fa515ac744e7ccce00fe92d4c7c62d9f6d7c989badd53f1ca9625691f5"
+content-hash = "f21b1afd869960b459e2fd0995d8fe3bc48fb016b16f5d00d3fba199b9d93b31"
