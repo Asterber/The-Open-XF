@@ -26,8 +26,8 @@ The Open XF (TOXF for short) is a project aimed at bringing [The X-Files Game](h
 
 ## Packages
 ### vc_parser
-#### Description
 Parser runs VirtualCinema GUI application and parse meta-information into output file. It supports cache (because parsing process very slow, around 1.5h without caching). Also VirtualCinema crashes sometimes after you click so many times to `trigger actions`
+Actual output file always placed in `data` directory of repo.
 #### Usage
 ```powershell
 # make sure you set PYTHONPATH variable (windows feature?)
