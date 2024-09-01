@@ -31,7 +31,7 @@ Parser runs VirtualCinema GUI application and parse meta-information into output
 #### Usage
 ```powershell
 # make sure you set PYTHONPATH variable (windows feature?)
-> set PYTHONPATH=%PYTHONPATH%;<path to project dir>
+> set PYTHONPATH=%PYTHONPATH%;%cd%
 > python parser\main.py
 ```
 
