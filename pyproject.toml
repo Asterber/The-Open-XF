@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "TOXF"
+version = "0.1.0"
+description = ""
+authors = ["Asterber <asterber666@gmail.com>"]
+readme = "README.md"
+packages = [
+    { include = "vc_parser" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pywinauto = "^0.6.8"
+pydantic = "^2.8.2"
+
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.3.1"
+ruff = "^0.6.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
