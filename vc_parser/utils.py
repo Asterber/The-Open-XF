@@ -9,16 +9,13 @@ def children(tree, force_get_childrens=False):
 
     children_elements = []
     if tree.item().cChildren == 1 or force_get_childrens:
-
         # Get the first child of this element
         child_elem = tree.tree_ctrl.send_message(
-            win32defines.TVM_GETNEXTITEM,
-            win32defines.TVGN_CHILD,
-            tree.elem)
+            win32defines.TVM_GETNEXTITEM, win32defines.TVGN_CHILD, tree.elem
+        )
 
         if child_elem:
-            children_elements.append(
-                _treeview_element(child_elem, tree.tree_ctrl))
+            children_elements.append(_treeview_element(child_elem, tree.tree_ctrl))
 
             # now get all the next children
             while True:
@@ -52,6 +49,7 @@ def sub_elements(tree, force_get_childrens: bool):
         sub_elems.extend(child.sub_elements())
 
     return sub_elems
+
 
 def get_selected_item(tree: TreeViewWrapper) -> _treeview_element:
     res = []

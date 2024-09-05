@@ -23,7 +23,7 @@ class FileCache(BaseModel):
 
     @staticmethod
     def get_file_path(klass: type[BaseModel]) -> str:
-        return klass.__name__.lower() + '_cache' + '.json'
+        return klass.__name__.lower() + "_cache" + ".json"
 
     @classmethod
     def load(cls, klass: type[BaseModel]) -> Self:
@@ -37,13 +37,15 @@ class FileCache(BaseModel):
         return cls(data=data, klass=klass)
 
     def save(self):
-        with open(self.get_file_path(self.klass), 'w') as f:
+        with open(self.get_file_path(self.klass), "w") as f:
             to_dump = {}
             for k, v in self.data.items():
                 to_dump[k] = [x.model_dump() for x in v]
             json.dump(to_dump, f)
 
+
 class Cache(BaseModel):
     triggers: FileCache
     trigger_actions: FileCache
     variables: FileCache
+    assets: FileCache
