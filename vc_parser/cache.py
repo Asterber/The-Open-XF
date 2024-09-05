@@ -49,3 +49,4 @@ class Cache(BaseModel):
     trigger_actions: FileCache
     variables: FileCache
     assets: FileCache
+    asset_names: FileCache

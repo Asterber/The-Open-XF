@@ -11,7 +11,7 @@ from pywinauto.controls.common_controls import _treeview_element
 
 from vc_parser.cache import Cache, FileCache
 from vc_parser.parsing import open_all_nodes, parse_assets, parse_nodes
-from vc_parser.schemas import Asset, Trigger, TriggerAction, Variable
+from vc_parser.schemas import Asset, Trigger, TriggerAction, Variable, AssetName
 
 logger = logging.getLogger("parser")
 
@@ -108,6 +108,7 @@ def main():
         triggers=FileCache.load(Trigger),
         trigger_actions=FileCache.load(TriggerAction),
         assets=FileCache.load(Asset),
+        asset_names=FileCache.load(AssetName),
     )
     app["VC Authoring Tool -"].menu_select(r"View -> Screen View")
     match config.what_parse:

@@ -6,6 +6,7 @@ from pywinauto.controls.common_controls import (
     _treeview_element,
 )
 from pywinauto.controls.win32_controls import ComboBoxWrapper
+from pywinauto.base_wrapper import ElementNotEnabled
 from tqdm.auto import tqdm
 
 from vc_parser import utils
@@ -31,6 +32,7 @@ from vc_parser.schemas import (
     Trigger,
     TriggerAction,
     Variable,
+    AssetName,
 )
 
 
@@ -288,6 +290,33 @@ def parse_trigger(app, trigger_name: str, path: NodePath, cache: Cache) -> Trigg
     return Trigger(name=trigger_name, actions=actions)
 
 
+def parse_asset_names(app: Application, path: NodePath, cache: Cache) -> list[Trigger]:
+    if cache.asset_names.has_key(path):
+        res = [x.name for x in cache.asset_names.get(path)]
+    else:
+        res = []
+        if app["VC Authoring Tool -"][">>Button"].exists(1):
+            try:
+                b = app["VC Authoring Tool -"][">>Button"]
+                if b.is_enabled():
+                    for t in b.texts():
+                        if t == ">>":
+                            b.click()
+                            c = "View Asset List"
+                            w = app[c]
+                            if not w["Ok"].exists(1):
+                                c = "Floorplan Asset List"
+                                w = app[c]
+                            w = w["ListBox"]
+                            res += [x for x in w.texts() if x]
+                            app[c]["Ok"].click()
+                            break
+            except ElementNotEnabled:
+                ...
+        cache.asset_names.set(path, [AssetName(name=x) for x in res])
+    return res
+
+
 def parse_triggers(app: Application, path: NodePath, cache: Cache) -> list[Trigger]:
     if cache.triggers.has_key(path):
         res = cache.triggers.get(path)
@@ -360,6 +389,7 @@ def parse_nodes(
             f"Parsing node with text '{node_text}' != right window title '{name}'"
         )
     n = Node(name=node.text(), path=path)
+    n.asset_names = parse_asset_names(app, path, cache)
     n.variables = parse_variables(app, path, cache)
     n.triggers = parse_triggers(app, path, cache)
     childrens = node.children()

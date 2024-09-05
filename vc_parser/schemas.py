@@ -124,6 +124,7 @@ class Node(BaseModel):
     variables: list[Variable] = Field(default_factory=list)
     triggers: list[Trigger] = Field(default_factory=list)
     path: NodePath
+    asset_names: list[str] = Field(default_factory=list)
 
     def _print(self, indent: int):
         print(" " * indent + ">", self.name)
@@ -197,3 +198,7 @@ class Asset(BaseModel):
     type: str
     resource: RStyle
     db_id: int
+
+
+class AssetName(BaseModel):
+    name: str
