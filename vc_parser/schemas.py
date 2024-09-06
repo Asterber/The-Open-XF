@@ -157,8 +157,8 @@ ResourceStatus = Literal[
 class DiscFile(BaseModel):
     disc: str
     file: str
-    start: int
-    end: int
+    start: int | None
+    end: int | None
 
 
 class RStyleResource(BaseModel):

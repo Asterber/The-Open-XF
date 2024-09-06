@@ -111,6 +111,8 @@ def main():
         asset_names=FileCache.load(AssetName),
     )
     app["VC Authoring Tool -"].menu_select(r"View -> Screen View")
+    app["VC Authoring Tool -"].menu_select(r"View -> Preview")
+    app["VC Authoring Tool -"].menu_select(r"View -> Interface List")
     match config.what_parse:
         case WhatParse.NODES:
             tw = app["VC Authoring Tool -"]["TreeView"]

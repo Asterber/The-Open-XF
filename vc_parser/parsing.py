@@ -38,22 +38,28 @@ from vc_parser.schemas import (
 
 def parse_assets(app: Application, cache: Cache) -> list[Asset]:
     res = []
-    lv: WindowSpecification = app["Asset List"]["List View"]
+    aw: WindowSpecification = app['Asset List']
+    lv: WindowSpecification = aw["List View"]
+    header = lv.header
+    h_click = header.click
+    h_click()
     items = lv.items()
     columns = lv.columns()
     pbar = tqdm(
-        items[:: len(columns)],
+        items[::len(columns)],
         desc="Parsing assets",
-        total=len(items) / len(columns),
+        total=int(len(items) / len(columns)),
     )
+    items[0].click()
+    ai = None
     for it in pbar:
-        it: _listview_item = it
-        name = it.text()
+        keyboard.send_keys('{ENTER}')
+        if ai is None:
+            ai = app['Asset Information']
+        name = ai['NameEdit'].window_text().strip()
         if cache.assets.has_key(name):
             asset: Asset = cache.assets.get(name)[0]  # type: ignore
         else:
-            it.click(double=True)
-            ai = app["Asset Information"]
             description = ai["DescriptionEdit"].window_text()
             category = ai["CategoryCombobox"].window_text()
             db_id = ai["Db IDEdit"].window_text()
@@ -62,9 +68,9 @@ def parse_assets(app: Application, cache: Cache) -> list[Asset]:
             match resource_style:
                 case "File":
                     disc_files = []
-                    ai["Disc FileButton"].click()
+                    fbs = "Disc FileButton"
+                    ai[fbs].click()
                     df = app["Disc Files"]
-                    df.print_control_identifiers()
                     for j, disc in enumerate(
                         (
                             "Core Install",
@@ -102,18 +108,17 @@ def parse_assets(app: Application, cache: Cache) -> list[Asset]:
                             case _:
                                 start_selector = f"StartEdit{j}"
                                 end_selector = f"EndEdit{j}"
-
                         file = df[file_selector].window_text()
                         start = df[start_selector].window_text()
                         end = df[end_selector].window_text()
                         f = DiscFile(
                             disc=disc,
                             file=file,
-                            start=start,
-                            end=end,
+                            start=start.strip() or None,
+                            end=end.strip() or None,
                         )
                         disc_files.append(f)
-                    df["CancelButton"].click()
+                    keyboard.send_keys('{ESC}')
                     resource = RStyleFile(
                         file=ai["File(s)Edit1"].window_text(),
                         from_=ai["FromEdit1"].window_text(),
@@ -158,9 +163,12 @@ def parse_assets(app: Application, cache: Cache) -> list[Asset]:
                 db_id=db_id,
                 resource=resource,
             )
-            ai["CancelButton"].click()
+            keyboard.send_keys('{ESC}')
             cache.assets.set(name, [asset])
             res.append(asset)
+        keyboard.send_keys('{ESC}')
+        h_click()
+        keyboard.send_keys('{VK_DOWN}')
     return res
 
 
