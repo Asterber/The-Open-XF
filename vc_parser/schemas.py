@@ -134,6 +134,19 @@ class Node(BaseModel):
     def print_tree(self):
         self._print(indent=0)
 
+    @staticmethod
+    def find_node(root_node: "Node", path: str) -> "Node":
+        n = root_node
+        for p in path.split("/")[1:]:
+            p = p.strip()
+            c = [x for x in n.childrens if x.name.strip() == p]
+            if len(c) == 0:
+                raise Exception(f"Not found path {path}")
+            if len(c) > 1:
+                raise Exception(f"Find multiple nodes for {path}")
+            n = c[0]
+        return n
+
 
 AssetStyle = Literal[
     "File",
