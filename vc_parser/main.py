@@ -11,7 +11,14 @@ from pywinauto.controls.common_controls import _treeview_element
 
 from vc_parser.cache import Cache, FileCache
 from vc_parser.parsing import open_all_nodes, parse_assets, parse_nodes
-from vc_parser.schemas import Asset, Trigger, TriggerAction, Variable, AssetName
+from vc_parser.schemas import (
+    Asset,
+    AssetName,
+    Trigger,
+    TriggerAction,
+    Variable,
+    ViewNavigation,
+)
 
 logger = logging.getLogger("parser")
 
@@ -91,15 +98,17 @@ def start_app(game_path: str, vc_exe_name: str) -> Application:
         )
         .connect(path=full_exec_path)
     )
+    app_uia = app #Application(backend='uia').connect(process=app.process)
 
     dlg: WindowSpecification = app.top_window()
-    dlg.Ignore.click()
-    return app
+    if dlg.Ignore.exists():
+        dlg.Ignore.click()
+    return app, app_uia
 
 
 def main():
     config = parse_config_from_args()
-    app = start_app(config.game_path, config.vc_exe_name)
+    app, app_uia = start_app(config.game_path, config.vc_exe_name)
     if config.just_open:
         logger.info("App started.")
         exit(0)
@@ -109,10 +118,12 @@ def main():
         trigger_actions=FileCache.load(TriggerAction),
         assets=FileCache.load(Asset),
         asset_names=FileCache.load(AssetName),
+        view_navigation=FileCache.load(ViewNavigation),
     )
     app["VC Authoring Tool -"].menu_select(r"View -> Screen View")
     app["VC Authoring Tool -"].menu_select(r"View -> Preview")
     app["VC Authoring Tool -"].menu_select(r"View -> Interface List")
+    app["VC Authoring Tool -"].menu_select(r"View -> Asset List")
     match config.what_parse:
         case WhatParse.NODES:
             tw = app["VC Authoring Tool -"]["TreeView"]
@@ -122,7 +133,7 @@ def main():
             el.click()
             n = None
             try:
-                n = parse_nodes(app, el, is_first=True, cache=cache)
+                n = parse_nodes(app, app_uia, el, is_first=True, cache=cache)
 
                 n.print_tree()
                 with open(config.output_file_name, "w") as f:
@@ -137,9 +148,12 @@ def main():
                 logger.exception("Error")
                 if config.debug:
                     input("Press enter to quit...")
+                app.kill()
+                main()
             finally:
                 app.kill()
         case WhatParse.ASSETS:
+            app["VC Authoring Tool -"].menu_select(r"View -> Asset List")
             try:
                 assets = parse_assets(app, cache)
                 with open("assets.json", "w") as f:
@@ -151,6 +165,8 @@ def main():
                 logger.exception("Error")
                 if config.debug:
                     input("Press enter to quit...")
+                app.kill()
+                main()
             finally:
                 app.kill()
 

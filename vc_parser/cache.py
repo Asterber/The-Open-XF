@@ -1,10 +1,13 @@
 import json
 import os
+from pathlib import Path
 from typing import Self
 
 from pydantic import BaseModel
 
 from vc_parser.schemas import NodePath
+
+CACHE_DIR = Path('cache')
 
 
 class FileCache(BaseModel):
@@ -23,7 +26,7 @@ class FileCache(BaseModel):
 
     @staticmethod
     def get_file_path(klass: type[BaseModel]) -> str:
-        return klass.__name__.lower() + "_cache" + ".json"
+        return CACHE_DIR / (klass.__name__.lower() + "_cache" + ".json")
 
     @classmethod
     def load(cls, klass: type[BaseModel]) -> Self:
@@ -50,3 +53,4 @@ class Cache(BaseModel):
     variables: FileCache
     assets: FileCache
     asset_names: FileCache
+    view_navigation: FileCache

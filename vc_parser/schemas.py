@@ -19,6 +19,7 @@ ActionType = Literal[
     "C++ Function",
     "3D Sound",
     "URL",
+    "Interface",
 ]
 
 
@@ -40,6 +41,10 @@ class ActionParamUrl(BaseModel):
 class ActionParamInventory(BaseModel):
     item: str
 
+
+class ActionParamInterface(BaseModel):
+    action: str
+    interface: str
 
 class ActionParamSetView(BaseModel):
     node: str
@@ -93,6 +98,7 @@ ActionParams = (
     | ActionParamInventory
     | ActionParamTimer
     | ActionParamSetView
+    | ActionParamInterface
 )
 
 
@@ -116,36 +122,6 @@ class Variable(BaseModel):
     type: VariableType
     is_constant: bool
     initial_value: str | bool | int
-
-
-class Node(BaseModel):
-    name: str
-    childrens: list[Self] = Field(default_factory=list)
-    variables: list[Variable] = Field(default_factory=list)
-    triggers: list[Trigger] = Field(default_factory=list)
-    path: NodePath
-    asset_names: list[str] = Field(default_factory=list)
-
-    def _print(self, indent: int):
-        print(" " * indent + ">", self.name)
-        for c in self.childrens:
-            c._print(indent + 1)
-
-    def print_tree(self):
-        self._print(indent=0)
-
-    @staticmethod
-    def find_node(root_node: "Node", path: str) -> "Node":
-        n = root_node
-        for p in path.split("/")[1:]:
-            p = p.strip()
-            c = [x for x in n.childrens if x.name.strip() == p]
-            if len(c) == 0:
-                raise Exception(f"Not found path {path}")
-            if len(c) > 1:
-                raise Exception(f"Find multiple nodes for {path}")
-            n = c[0]
-        return n
 
 
 AssetStyle = Literal[
@@ -215,3 +191,105 @@ class Asset(BaseModel):
 
 class AssetName(BaseModel):
     name: str
+
+Cursor = Literal['Left', 'Right', 'Forward', 'Back', 'Up', 'Ups', 'Down', 'Gunsight', 'ViewFinder', 'Eye', 'ActionFist', 'X', 'InventoryBadge', 'InventoryCaseFiles', 'InventoryCowbar', 'Inventory',]
+
+class HotSpot(BaseModel):
+    name: Literal['Default Left', 'Default Right', 'Default Forward', 'Default Down', 'Default Up', 'CU', 'Back', 'Custom']
+    cursor: str
+    left: int
+    top: int
+    right: int
+    bottom: int
+
+class DestinationView(BaseModel):
+    node: str
+    location: str
+    viewpoint: str
+    view: str
+
+class Navigation(BaseModel):
+    hot_spot: HotSpot
+    destination_view: DestinationView
+    enabled: str
+    db_id: int
+
+class Character(BaseModel):
+    name: str
+    description: str
+    db_id: int
+
+
+class CharacterProperties(BaseModel):
+    character: Character
+    hot_spot: HotSpot
+    conversations: list
+    idea_responses: list
+    acknowledgements: list
+    variables: list
+    triggers: list[Trigger]
+
+class ExplorationProperties(BaseModel):
+    hot_spot: HotSpot
+    variable: list
+    triggers: list[Trigger]
+    enabled: str
+    db_id: int
+
+class ViewNavigation(BaseModel):
+    navigations: list[Navigation]
+    explorations: list[ExplorationProperties]
+    characters: list[CharacterProperties]
+
+
+class Conversation(BaseModel):
+    name: str
+    dialogs: list[str]
+    questions: list[str]
+    replies: list[str]
+    atoms: list[str]
+    support_history: bool
+    variables: list[Variable]
+    triggers: list[Trigger]
+    enabled: str
+    db_id: int
+
+class IdeaResponse(BaseModel):
+    name: str
+    idea_icon: str
+    questions: list[str]
+    replies: list[str]
+    atoms: list[str]
+    variables: list[Variable]
+    triggers: list[Trigger]
+
+class Node(BaseModel):
+    name: str
+    childrens: list[Self] = Field(default_factory=list)
+    variables: list[Variable] = Field(default_factory=list)
+    triggers: list[Trigger] = Field(default_factory=list)
+    path: NodePath
+    asset_names: list[str] = Field(default_factory=list)
+    view_navigation: ViewNavigation | None = None
+
+    def _print(self, indent: int):
+        print(" " * indent + ">", self.name)
+        for c in self.childrens:
+            c._print(indent + 1)
+
+    def print_tree(self):
+        self._print(indent=0)
+
+    @staticmethod
+    def find_node(root_node: "Node", path: str) -> "Node":
+        n = root_node
+        for p in path.split("/")[1:]:
+            p = p.strip()
+            c = [x for x in n.childrens if x.name.strip() == p]
+            if len(c) == 0:
+                raise Exception(f"Not found path {path}")
+            if len(c) > 1:
+                raise Exception(f"Find multiple nodes for {path}")
+            n = c[0]
+        return n
+
