@@ -176,7 +176,7 @@ def parse_assets(app: Application, cache: Cache) -> list[Asset]:
             )
             keyboard.send_keys('{ESC}')
             cache.assets.set(name, [asset])
-            res.append(asset)
+        res.append(asset)
         keyboard.send_keys('{ESC}')
         h_click()
         keyboard.send_keys('{VK_DOWN}')
