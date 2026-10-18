@@ -3,6 +3,7 @@
 > **This project is archived and no longer maintained.** Its successor is
 > **[Shiloh](https://github.com/Asterber/shiloh)**: an open-source engine that runs The X-Files Game on Windows, macOS,
 > Linux and in the browser, from your own copy of the game. The whole game can be played from start to finish there.
+
 The Open XF (TOXF for short) is a project aimed at bringing [The X-Files Game](https://en.wikipedia.org/wiki/The_X-Files_Game) to modern platforms with a range of improvements.
 
 **Important!** This project does not distribute any copyrighted files. To use the project, you must install the game from your legal copy!
